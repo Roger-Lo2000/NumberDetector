@@ -96,7 +96,6 @@ def split_row(row_arr):
             bound.append(i)
             val = row_arr[i]
     #print(bound)
-    print(bound)
     return bound
 
 def split_col(col_arr):
@@ -125,7 +124,7 @@ def split_img(img,bound):
         if(s[i].size != 0):
             cv2.imshow('sub-img',s[i])
             cv2.imwrite(str(i)+'.jpg',s[i])
-    exit()
+    # exit()
 if __name__ == '__main__':
     
     cap = cv2.VideoCapture(0)
@@ -158,7 +157,7 @@ if __name__ == '__main__':
         cv2.imshow('frame',frame)
 
         # print(cnt)
-        #print(t.all())
+        # print(t.all())
         if(cnt > th and t.all() and t.size != 0):
             g = cv2.cvtColor(t,cv2.COLOR_BGR2GRAY)
             blur = cv2.GaussianBlur(g,(9,9),0)
