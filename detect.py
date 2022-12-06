@@ -160,7 +160,7 @@ if __name__ == '__main__':
         # print(t.all())
         if(cnt > th and t.all() and t.size != 0):
             g = cv2.cvtColor(t,cv2.COLOR_BGR2GRAY)
-            blur = cv2.GaussianBlur(g,(9,9),0)
+            blur = cv2.gaussianblur(g,(9,9),0)
             binary = cv2.adaptiveThreshold(blur,255,cv2.ADAPTIVE_THRESH_MEAN_C,cv2.THRESH_BINARY,13,2)
             dilate = cv2.dilate(binary,kernel_d,iterations = 1)
             erode_t = cv2.erode(dilate,kernel_e,iterations = 3)
