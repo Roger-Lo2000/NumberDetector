@@ -109,7 +109,9 @@ def split_row(img,row_arr):
         l.append(bound.copy())
 
     for i in range(len(l)):
-        img_set.append(img[l[i][0]:l[i][1],:])
+        sub_img = img[l[i][0]:l[i][1],:]
+        img_set.append(sub_img)
+        # img_set.append(cv2.resize(sub_img,(28,28),interpolation=cv2.INTER_AREA))
     return img_set
 
 def split_col(img,col_arr):
@@ -118,6 +120,7 @@ def split_col(img,col_arr):
     index = 0
     bound = [0,0]
     img_set = []
+    
     for i in range(len(col_arr)):
         if(val != col_arr[i]):
             if(index == 0):
@@ -133,7 +136,10 @@ def split_col(img,col_arr):
         bound[index] = len(col_arr)
         l.append(bound.copy())
     for i in range(len(l)):
-        img_set.append(img[:,l[i][0]:l[i][1]])
+        sub_img = img[:,l[i][0]:l[i][1]]
+
+        img_set.append(sub_img)
+        # img_set.append(cv2.resize(sub_img,(28,28),interpolation=cv2.INTER_AREA))
     return img_set
 if __name__ == '__main__':
     
@@ -165,7 +171,7 @@ if __name__ == '__main__':
                         img = cv2.warpPerspective(gray,M,(int(dst[3][0]),int(dst[3][1])))
                         #img = cv2.dilate(img,kernel_d,iterations = 1)
                         #img = cv2.adaptiveThreshold(img,255,cv2.ADAPTIVE_THRESH_MEAN_C,cv2.THRESH_BINARY,13,2)
-                        _, img = cv2.threshold(img,120,255,cv2.THRESH_BINARY)
+                        _, img = cv2.threshold(img,80,255,cv2.THRESH_BINARY)
                         img = img[10:img.shape[0] - 10,:]
                         img = img[:,10:img.shape[1]-10]
             row_arr = project_row(img)
@@ -178,7 +184,11 @@ if __name__ == '__main__':
             
             for i in range(len(img_set)):
                 for j in range(len(img_set[i])):
-                    cv2.imshow(str(i)+'_'+str(j),img_set[i][j])                   
+                    g = img_set[i][j]
+                    print(g.shape)
+                    #qg = cv2.resize(img,(28,28),interpolation=cv2.INTER_LINEAR)
+                    #cv2.imshow('1',g)
+                    #cv2.imshow(str(i)+'_'+str(j),img_set[i][j])                   
             cv2.imshow('select frame',img)
         if(cv2.waitKey(1) & 0xFF == ord('q')):
             break
