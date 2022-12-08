@@ -6,12 +6,12 @@ import matplotlib.pyplot as plt
 import torch.nn.functional as F
 import cv2
 # Device configuration
-device = torch.device('cpu' if torch.cuda.is_available() else 'cpu')
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 # Hyper-parameters 
 input_size = 784 # 28x28
-hidden_size1 = 500
-hidden_size2 = 500  
+hidden_size1 = 1000
+hidden_size2 = 100  
 num_classes = 10
 num_epochs = 2
 batch_size = 100
@@ -49,22 +49,13 @@ class NeuralNet(nn.Module):
     def __init__(self, input_size, num_classes):
         super(NeuralNet, self).__init__()
         self.input_size = input_size
-        self.conv1 = nn.Conv2d(1,6,3)
-        self.pool = nn.MaxPool2d(2,2)
-        self.conv2 = nn.Conv2d(6,16,3)
-
-        self.fc1 = nn.Linear(11*11*16, hidden_size1) 
-        self.fc2 = nn.Linear(hidden_size1, hidden_size2)  
-        self.fc3 = nn.Linear(hidden_size2, num_classes)  
+        self.fc1 = nn.Linear(784, hidden_size1) 
+        self.fc2 = nn.Linear(hidden_size1, num_classes)  
 
     
     def forward(self, x):
-        out = self.pool(F.relu(self.conv1(x)))
-        out = F.relu(self.conv2(out))
-        out = out.view(-1,11*11*16)
-        out = F.relu(self.fc1(out))
-        out = F.relu(self.fc2(out))
-        out = self.fc3(out)
+        out = F.relu(self.fc1(x))
+        out = self.fc2(out)
         # no activation and no softmax at the end
         return out
 
@@ -80,7 +71,7 @@ for epoch in range(num_epochs):
     for i, (images, labels) in enumerate(train_loader):  
         # origin shape: [100, 1, 28, 28]
         # resized: [100, 784]
-        #images = images.reshape(-1, 28*28).to(device)
+        images = images.reshape(-1, 28*28).to(device)
         images = images.to(device)
         labels = labels.to(device)
         
@@ -102,7 +93,7 @@ with torch.no_grad():
     n_correct = 0
     n_samples = 0
     for images, labels in test_loader:
-        images = images.to(device)
+        images = images.reshape(-1, 28*28).to(device)
         labels = labels.to(device)
         outputs = model(images)
         # max returns (value ,index)
@@ -112,5 +103,5 @@ with torch.no_grad():
 
     acc = 100.0 * n_correct / n_samples
     print(f'Accuracy of the network on the 10000 test images: {acc} %')
-torch.save(model.state_dict(),'./model_CNN.pth')
+torch.save(model.state_dict(),'./model_fc.pth')
 #torch.save(model,'./model.pth')
